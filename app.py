@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
 import datetime
+import os
 
 app = Flask(__name__)
 
@@ -57,9 +58,16 @@ def stylized_headers(request_headers):
 
 
 def write_to_log(message):
+    # check if file exists, it doesnt create it
+    if not os.path.exists('flask_uwsgi.log'):
+        f = open('flask_uwsgi.log', "w+")
+        f.close()
+
+    # append message to file
     try:
-        f = open('flask_uwsgi.log', "w")
+        f = open('flask_uwsgi.log', "a+")
         current_time = datetime.datetime.now()
+        f.write('\n')
         f.write('[Server]:  ' + str(current_time) + ': ' + str(message))
         f.close()
     except Exception:
